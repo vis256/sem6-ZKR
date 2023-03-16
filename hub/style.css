@@ -1,0 +1,9 @@
+nav ul li a {
+  margin: 0.25rem;
+}
+
+#logo {
+  background-color: #fff3;
+  padding: 0.5rem;
+  display: block;
+}
