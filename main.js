@@ -1,4 +1,4 @@
-const pages = ["Playfair", "BBS", "FIPS"];
+const pages = ["Playfair", "BBS"];
 
 let currentPage = undefined;
 
@@ -28,9 +28,6 @@ function renderAlgorithm() {
 
     case "BBS":
       new BBS().render();
-      break;
-
-    case "FIPS":
       new FIPS().render();
       break;
 
