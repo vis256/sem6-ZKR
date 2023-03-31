@@ -13,37 +13,42 @@
     <script src="xeact.js"></script>
     <script src="Base.js"></script>
     <script src="Playfair.js"></script>
-    <script defer src="algos.js"></script>
+    <script src="BBS.js"></script>
+    <script src="FIPS.js"></script>
     <script defer src="main.js"></script>
   </head>
   <body>
     <nav>
       <ul>
         <li>
-          <strong id="logo"
-            >Wybrane <br />
-            Zagadnienia<br />
-            Kryptograficzne</strong
-          >
+          <strong id="logo">Wybrane Zagadnienia Kryptograficzne</strong>
         </li>
       </ul>
       <ul>
         <li>
           <a
-            onclick="selectPage('PlayfairEncode')"
-            id="PlayfairEncode-btn"
+            onclick="selectPage('Playfair')"
+            id="Playfair-btn"
             class="outline"
             href="#"
             role="button"
-            >PlayfairEncode</a
+            >Playfair</a
           >
           <a
-            onclick="selectPage('PlayfairDecode')"
-            id="PlayfairDecode-btn"
+            onclick="selectPage('BBS')"
+            id="BBS-btn"
             class="outline"
             href="#"
             role="button"
-            >PlayfairDecode</a
+            >BBS</a
+          >
+          <a
+            onclick="selectPage('FIPS')"
+            id="FIPS-btn"
+            class="outline"
+            href="#"
+            role="button"
+            >FIPS</a
           >
         </li>
       </ul>

@@ -1,4 +1,4 @@
-const pages = ["PlayfairEncode", "PlayfairDecode"];
+const pages = ["Playfair", "BBS", "FIPS"];
 
 let currentPage = undefined;
 
@@ -21,17 +21,20 @@ function renderAlgorithm() {
   screen.innerHTML = "";
 
   switch (currentPage) {
-    case "PlayfairEncode":
-      currentAlgo = new PlayfairEncode();
+    case "Playfair":
+      new PlayfairEncode().render();
+      new PlayfairDecode().render();
       break;
 
-    case "PlayfairDecode":
-      currentAlgo = new PlayfairDecode();
+    case "BBS":
+      new BBS().render();
+      break;
+
+    case "FIPS":
+      new FIPS().render();
       break;
 
     default:
       break;
   }
-
-  currentAlgo.render();
 }

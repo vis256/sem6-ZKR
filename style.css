@@ -3,7 +3,18 @@ nav ul li a {
 }
 
 #logo {
-  background-color: #fff3;
   padding: 0.5rem;
   display: block;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+
+  align-items: center;
+
+  * {
+    margin: 0;
+  }
 }
