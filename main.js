@@ -1,4 +1,4 @@
-const pages = ["Playfair", "BBS"];
+const pages = ["Playfair", "BBS", "RSA", "DH"];
 
 let currentPage = undefined;
 
@@ -31,7 +31,31 @@ function renderAlgorithm() {
       new FIPS().render();
       break;
 
+    case "RSA":
+      new RSAKey().render();
+      new RSAEncode().render();
+      new RSADecode().render();
+      break;
+
+    case "DH":
+      new DH().render();
+      break;
+
     default:
       break;
   }
+}
+
+function modPow(base, exponent, modulus) {
+  if (modulus === 1) return 0;
+  let result = 1;
+  base = base % modulus;
+  while (exponent > 0) {
+    if (exponent % 2 === 1) {
+      result = (result * base) % modulus;
+    }
+    exponent = Math.floor(exponent / 2);
+    base = (base * base) % modulus;
+  }
+  return result;
 }

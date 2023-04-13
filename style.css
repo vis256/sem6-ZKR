@@ -18,3 +18,7 @@ nav ul li a {
     margin: 0;
   }
 }
+
+.title {
+  opacity: 0.5;
+}

@@ -15,6 +15,10 @@
     <script src="Playfair.js"></script>
     <script src="BBS.js"></script>
     <script src="FIPS.js"></script>
+    <script src="RSAKey.js"></script>
+    <script src="RSAEncode.js"></script>
+    <script src="RSADecode.js"></script>
+    <script src="DH.js"></script>
     <script defer src="main.js"></script>
   </head>
   <body>
@@ -41,6 +45,22 @@
             href="#"
             role="button"
             >BBS & FIPS</a
+          >
+          <a
+            onclick="selectPage('RSA')"
+            id="RSA-btn"
+            class="outline"
+            href="#"
+            role="button"
+            >RSA</a
+          >
+          <a
+            onclick="selectPage('DH')"
+            id="DH-btn"
+            class="outline"
+            href="#"
+            role="button"
+            >DH</a
           >
         </li>
       </ul>

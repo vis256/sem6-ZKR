@@ -7,7 +7,7 @@ class Base {
     const onsubmitBound = this.onsubmit.bind(this);
 
     let newSection = h("article", {}, [
-      h("h1", { innerText: this.name }),
+      h("h1", { innerText: this.name, classList: ["title"] }),
       h("form", {
         id: `${this.name}-inputs`,
         onsubmit: onsubmitBound,
