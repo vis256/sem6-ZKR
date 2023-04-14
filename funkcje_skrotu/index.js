@@ -66,7 +66,10 @@ function test(string) {
 }
 
 rl.on("line", (line) => {
+  console.log("==================================");
   test(line);
+  console.log("==================================");
+  console.log(" ");
 });
 // let xd = "";
 // for (let i = 0; i < 10000000; i++) {
