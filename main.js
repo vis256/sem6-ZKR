@@ -1,4 +1,4 @@
-const pages = ["Playfair", "BBS", "RSA", "DH"];
+const pages = ["Playfair", "BBS", "RSA", "DH", "Shamir"];
 
 let currentPage = undefined;
 
@@ -40,6 +40,9 @@ function renderAlgorithm() {
     case "DH":
       new DH().render();
       break;
+
+    case "Shamir":
+      new Shamir().render();
 
     default:
       break;

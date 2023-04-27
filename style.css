@@ -22,3 +22,9 @@ nav ul li a {
 .title {
   opacity: 0.5;
 }
+
+iframe {
+  border: none;
+  height: 32rem;
+  width: 50rem;
+}

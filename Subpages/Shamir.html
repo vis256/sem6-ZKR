@@ -1,0 +1,258 @@
+<div class="container">
+  <div class="row">
+    <canvas width="300" height="300" id="canvas-1"></canvas>
+    <canvas width="300" height="300" id="canvas-2"></canvas>
+  </div>
+  <div class="row">
+    <canvas width="300" height="300" id="canvas-res"></canvas>
+    <div class="options">
+      <button onclick="turnOn()">On</button>
+      <button onclick="turnOff()">Off</button>
+      <button onclick="calculate()">Calculate</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .row {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+
+    gap: 1rem;
+
+    align-items: center;
+    justify-content: center;
+  }
+
+  .row .options {
+    width: 300px;
+    height: 300px;
+  }
+
+  #canvas-1 {
+    background-color: red;
+  }
+
+  #canvas-2 {
+    background-color: blue;
+  }
+
+  #canvas-res {
+    background-color: aqua;
+  }
+
+  .options {
+    background-color: brown;
+  }
+</style>
+<script>
+  const scaling = 3;
+  let outputScaling = 6;
+  let calculateTimeout;
+
+  const Contexts = [
+    document.getElementById("canvas-1").getContext("2d"),
+    document.getElementById("canvas-2").getContext("2d"),
+    document.getElementById("canvas-res").getContext("2d"),
+  ];
+
+  const px = (pixels, scale = scaling) => scale * pixels;
+
+  function drawPixelInput(ctx, x, y, color) {
+    ctx.fillStyle = color;
+    ctx.fillRect(px(x), px(y), px(1), px(1));
+  }
+
+  function drawPixelOutput(ctx, x, y, color) {
+    ctx.fillStyle = color;
+    ctx.fillRect(
+      px(x, outputScaling),
+      px(y, outputScaling),
+      px(1, outputScaling),
+      px(1, outputScaling)
+    );
+  }
+
+  Pixels = [];
+
+  let generatingInputs = true;
+
+  function generate() {
+    const xd = (max) => {
+      const empty = [];
+      for (let i = 0; i < max; i++) {
+        const row = [];
+        for (let j = 0; j < max; j++) {
+          row.push(0);
+        }
+        empty.push(row);
+      }
+      Pixels.push(empty);
+    };
+
+    xd(100);
+    xd(100);
+    xd(100);
+    console.log(Pixels);
+
+    // for (let i = 0; i < 50; i++) {
+    //   for (let j = 0; j < 50; j++) {
+    //     if (i % 2 === 0 && j % 3 === 0) Pixels[2][i][j] = 1;
+    //     else Pixels[2][i][j] = 0;
+    //   }
+    // }
+  }
+
+  function randomChoice() {
+    return Math.random() > 0.5 ? "S" : "BS";
+  }
+
+  function drawSlash(topRow, leftCol, pixels) {
+    const topLeft = { y: topRow * 2, x: leftCol * 2 };
+    const topRight = { y: topRow * 2, x: leftCol * 2 + 1 };
+    const bottomLeft = { y: topRow * 2 + 1, x: leftCol * 2 };
+    const bottomRight = { y: topRow * 2 + 1, x: leftCol * 2 + 1 };
+
+    pixels[topLeft.y][topLeft.x] = 1;
+    pixels[topRight.y][topRight.x] = 0;
+    pixels[bottomLeft.y][bottomLeft.x] = 0;
+    pixels[bottomRight.y][bottomRight.x] = 1;
+  }
+
+  function drawBackslash(topRow, leftCol, pixels) {
+    const topLeft = { y: topRow * 2, x: leftCol * 2 };
+    const topRight = { y: topRow * 2, x: leftCol * 2 + 1 };
+    const bottomLeft = { y: topRow * 2 + 1, x: leftCol * 2 };
+    const bottomRight = { y: topRow * 2 + 1, x: leftCol * 2 + 1 };
+
+    pixels[topLeft.y][topLeft.x] = 0;
+    pixels[topRight.y][topRight.x] = 1;
+    pixels[bottomLeft.y][bottomLeft.x] = 1;
+    pixels[bottomRight.y][bottomRight.x] = 0;
+  }
+
+  function calculateShares() {
+    if (!generatingInputs) return;
+    console.log("calculating");
+
+    for (let i = 0; i < 50; i++) {
+      for (let j = 0; j < 50; j++) {
+        const dir = randomChoice();
+
+        if (dir === "S") {
+          drawSlash(i, j, Pixels[0]);
+          if (Pixels[2][i][j] === 0) {
+            drawBackslash(i, j, Pixels[1]);
+          } else {
+            drawSlash(i, j, Pixels[1]);
+          }
+        } else {
+          drawBackslash(i, j, Pixels[0]);
+          if (Pixels[2][i][j] === 0) {
+            drawSlash(i, j, Pixels[1]);
+          } else {
+            drawBackslash(i, j, Pixels[1]);
+          }
+        }
+      }
+    }
+  }
+
+  function drawInputs() {
+    for (const [ctxidx, cv] of Contexts.entries()) {
+      if (ctxidx > 1) break;
+      for (const [y, row] of Pixels[ctxidx].entries()) {
+        for (const [x, pixel] of row.entries()) {
+          if (ctxidx < 2) drawPixelInput(cv, x, y, pixel ? "#fafafa" : "black");
+        }
+      }
+    }
+  }
+
+  function drawOutputs() {
+    for (const [y, row] of Pixels[2].entries()) {
+      for (const [x, pixel] of row.entries()) {
+        drawPixelOutput(Contexts[2], x, y, pixel ? "#fafafa" : "black");
+      }
+    }
+  }
+
+  function calculate() {
+    outputScaling = 3;
+    for (let y = 0; y < 100; y++) {
+      for (let x = 0; x < 100; x++) {
+        if (Pixels[0][y][x] === 0 || Pixels[1][y][x] === 0) {
+          Pixels[2][y][x] = 0;
+        } else {
+          Pixels[2][y][x] = 1;
+        }
+      }
+    }
+  }
+
+  generate();
+
+  function turnOn() {
+    generatingInputs = true;
+    outputScaling = 6;
+  }
+
+  function turnOff() {
+    generatingInputs = false;
+  }
+
+  setInterval(() => {
+    calculateShares();
+    drawInputs();
+    drawOutputs();
+
+    // calculate();
+  }, 1000);
+
+  const boxes = [
+    document.getElementById("canvas-1").getBoundingClientRect(),
+    document.getElementById("canvas-2").getBoundingClientRect(),
+    document.getElementById("canvas-res").getBoundingClientRect(),
+  ];
+
+  document.querySelectorAll("canvas").forEach((cv, idx) => {
+    cv.addEventListener("mousemove", (e) => {
+      console.log(idx);
+      if (!(e.buttons === 1)) return;
+
+      const [x, y] = [e.clientX, e.clientY];
+
+      if (
+        !(
+          x >= boxes[idx].left &&
+          x <= boxes[idx].right &&
+          y >= boxes[idx].top &&
+          y <= boxes[idx].bottom
+        )
+      )
+        return;
+
+      const localX = Math.floor(
+        (x - boxes[idx].left) / (idx === 2 ? 6 : scaling)
+      );
+      const localY = Math.floor(
+        (y - boxes[idx].top) / (idx === 2 ? 6 : scaling)
+      );
+
+      Pixels[idx][localY][localX] = 1;
+
+      // if (idx === 2) {
+      // calculateTimeout = setTimeout(calculateShares, 3000);
+      // }
+    });
+  });
+</script>
