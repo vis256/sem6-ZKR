@@ -9,6 +9,7 @@
       <button onclick="turnOn()">On</button>
       <button onclick="turnOff()">Off</button>
       <button onclick="calculate()">Calculate</button>
+      <button onclick="bleachInput()">Bleach</button>
     </div>
   </div>
 </div>
@@ -113,10 +114,10 @@
   }
 
   function randomChoice() {
-    return Math.random() > 0.5 ? "S" : "BS";
+    return Math.random() > 0.5;
   }
 
-  function drawSlash(topRow, leftCol, pixels) {
+  function drawLeft(topRow, leftCol, pixels) {
     const topLeft = { y: topRow * 2, x: leftCol * 2 };
     const topRight = { y: topRow * 2, x: leftCol * 2 + 1 };
     const bottomLeft = { y: topRow * 2 + 1, x: leftCol * 2 };
@@ -124,11 +125,11 @@
 
     pixels[topLeft.y][topLeft.x] = 1;
     pixels[topRight.y][topRight.x] = 0;
-    pixels[bottomLeft.y][bottomLeft.x] = 0;
-    pixels[bottomRight.y][bottomRight.x] = 1;
+    pixels[bottomLeft.y][bottomLeft.x] = 1;
+    pixels[bottomRight.y][bottomRight.x] = 0;
   }
 
-  function drawBackslash(topRow, leftCol, pixels) {
+  function drawRight(topRow, leftCol, pixels) {
     const topLeft = { y: topRow * 2, x: leftCol * 2 };
     const topRight = { y: topRow * 2, x: leftCol * 2 + 1 };
     const bottomLeft = { y: topRow * 2 + 1, x: leftCol * 2 };
@@ -136,8 +137,8 @@
 
     pixels[topLeft.y][topLeft.x] = 0;
     pixels[topRight.y][topRight.x] = 1;
-    pixels[bottomLeft.y][bottomLeft.x] = 1;
-    pixels[bottomRight.y][bottomRight.x] = 0;
+    pixels[bottomLeft.y][bottomLeft.x] = 0;
+    pixels[bottomRight.y][bottomRight.x] = 1;
   }
 
   function calculateShares() {
@@ -146,23 +147,40 @@
 
     for (let i = 0; i < 50; i++) {
       for (let j = 0; j < 50; j++) {
-        const dir = randomChoice();
+        const path = randomChoice();
 
-        if (dir === "S") {
-          drawSlash(i, j, Pixels[0]);
-          if (Pixels[2][i][j] === 0) {
-            drawBackslash(i, j, Pixels[1]);
+        if (Pixels[2][i][j] === 1) {
+          if (path) {
+            drawRight(i, j, Pixels[0]);
+            drawRight(i, j, Pixels[1]);
           } else {
-            drawSlash(i, j, Pixels[1]);
+            drawLeft(i, j, Pixels[0]);
+            drawLeft(i, j, Pixels[1]);
           }
         } else {
-          drawBackslash(i, j, Pixels[0]);
-          if (Pixels[2][i][j] === 0) {
-            drawSlash(i, j, Pixels[1]);
+          if (path) {
+            drawRight(i, j, Pixels[0]);
+            drawLeft(i, j, Pixels[1]);
           } else {
-            drawBackslash(i, j, Pixels[1]);
+            drawLeft(i, j, Pixels[0]);
+            drawRight(i, j, Pixels[1]);
           }
         }
+        // if (path) {
+        //   drawLeft(i, j, Pixels[0]);
+        //   if (Pixels[2][i][j] === 0) {
+        //     drawRight(i, j, Pixels[1]);
+        //   } else {
+        //     drawLeft(i, j, Pixels[1]);
+        //   }
+        // } else {
+        //   drawRight(i, j, Pixels[0]);
+        //   if (Pixels[2][i][j] === 0) {
+        //     drawLeft(i, j, Pixels[1]);
+        //   } else {
+        //     drawRight(i, j, Pixels[1]);
+        //   }
+        // }
       }
     }
   }
@@ -187,14 +205,22 @@
   }
 
   function calculate() {
+    console.log("this?");
     outputScaling = 3;
     for (let y = 0; y < 100; y++) {
       for (let x = 0; x < 100; x++) {
-        if (Pixels[0][y][x] === 0 || Pixels[1][y][x] === 0) {
-          Pixels[2][y][x] = 0;
-        } else {
-          Pixels[2][y][x] = 1;
-        }
+        let value = Pixels[0][y][x] + Pixels[1][y][x];
+        if (value > 1) value = 1;
+        Pixels[2][y][x] = 1 - value;
+      }
+    }
+  }
+
+  function bleachInput() {
+    for (let y = 0; y < 100; y++) {
+      for (let x = 0; x < 100; x++) {
+        Pixels[0][y][x] = 1;
+        Pixels[1][y][x] = 1;
       }
     }
   }
@@ -242,11 +268,13 @@
         return;
 
       const localX = Math.floor(
-        (x - boxes[idx].left) / (idx === 2 ? 6 : scaling)
+        ((x - boxes[idx].left) / (idx === 2 ? outputScaling : scaling)) % 100
       );
       const localY = Math.floor(
-        (y - boxes[idx].top) / (idx === 2 ? 6 : scaling)
+        ((y - boxes[idx].top) / (idx === 2 ? outputScaling : scaling)) % 100
       );
+
+      console.log(localY);
 
       Pixels[idx][localY][localX] = 1;
 
