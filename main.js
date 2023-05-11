@@ -1,4 +1,4 @@
-const pages = ["Playfair", "BBS", "RSA", "DH", "Shamir"];
+const pages = ["Playfair", "BBS", "RSA", "DH", "Shamir", "Stego"];
 
 let currentPage = undefined;
 
@@ -43,6 +43,10 @@ function renderAlgorithm() {
 
     case "Shamir":
       new Shamir().render();
+
+    case "Stego":
+      new Stego().render();
+      break;
 
     default:
       break;
