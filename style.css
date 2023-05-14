@@ -28,3 +28,7 @@ iframe {
   height: 32rem;
   width: 50rem;
 }
+
+body {
+  overflow-x: hidden;
+}
